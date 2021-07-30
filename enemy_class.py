@@ -11,6 +11,7 @@ class Enemy:
         self.grid_pos = pos
         self.starting_pos = [pos.x, pos.y]
         self.pix_pos = self.get_pix_pos()
+        self.killed = False
         self.radius = int(self.app.cell_width//2.3)
         self.number = number
         self.colour = self.set_colour()
@@ -21,16 +22,19 @@ class Enemy:
 
     def update(self):
         self.target = self.set_target()
-        if self.target != self.grid_pos:
+        if self.killed and self.speed != 0:
+            self.speed = 0
+            self.colour = (0, 0, 0)
+        if self.target != self.grid_pos and self.killed is False:
             self.pix_pos += self.direction * self.speed
             if self.time_to_move():
                 self.move()
-
-        # Setting grid position in reference to pix position
-        self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER +
-                            self.app.cell_width//2)//self.app.cell_width+1
-        self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER +
-                            self.app.cell_height//2)//self.app.cell_height+1
+        if self.killed is False:
+            # Setting grid position in reference to pix position
+            self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER +
+                                self.app.cell_width//2)//self.app.cell_width+1
+            self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER +
+                                self.app.cell_height//2)//self.app.cell_height+1
 
     def draw(self):
         pygame.draw.circle(self.app.screen, self.colour,
@@ -143,7 +147,7 @@ class Enemy:
         if self.number == 0:
             return (43, 78, 203)
         if self.number == 1:
-            return (197, 200, 27)
+            return (52, 237, 36)
         if self.number == 2:
             return (189, 29, 29)
         if self.number == 3:
@@ -158,3 +162,9 @@ class Enemy:
             return "random"
         else:
             return "scared"
+
+    def set_killed(self, state):
+        if self.killed != state:
+            self.killed = state
+        else:
+            pass

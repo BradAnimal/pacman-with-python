@@ -1,7 +1,7 @@
 from pygame.math import Vector2 as vec
 
 # screen settings
-WIDTH, HEIGHT = 610, 670
+WIDTH, HEIGHT = 610, 670                                                        #The width and height of the game window is set
 FPS = 60
 TOP_BOTTOM_BUFFER = 50
 MAZE_WIDTH, MAZE_HEIGHT = WIDTH-TOP_BOTTOM_BUFFER, HEIGHT-TOP_BOTTOM_BUFFER

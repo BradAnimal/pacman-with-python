@@ -28,6 +28,7 @@ class App:
         self.make_enemies()
 
     def run(self):
+        te = 0
         while self.running:
             if self.state == 'start':
                 self.start_events()
@@ -37,6 +38,15 @@ class App:
                 self.playing_events()
                 self.playing_update()
                 self.playing_draw()
+                dt = self.clock.tick()
+                te += dt
+                if te >= 30000:
+                    if len(self.enemies) >= 128:
+                        self.state = 'game over'
+                    else:
+                        self.make_enemies()
+                        te = 0
+
             elif self.state == 'game over':
                 self.game_over_events()
                 self.game_over_update()
@@ -83,6 +93,7 @@ class App:
     def make_enemies(self):
         for idx, pos in enumerate(self.e_pos):
             self.enemies.append(Enemy(self, vec(pos), idx))
+
 
     def draw_grid(self):
         for x in range(WIDTH//self.cell_width):
@@ -161,6 +172,11 @@ class App:
         for enemy in self.enemies:
             if enemy.grid_pos == self.player.grid_pos:
                 self.remove_life()
+                if enemy.killed != True:
+                    enemy.set_killed(True)
+                enemy.grid_pos = vec(enemy.starting_pos)
+                enemy.pix_pos = enemy.get_pix_pos()
+                enemy.direction *= 0
 
     def playing_draw(self):
         self.screen.fill(BLACK)
@@ -176,17 +192,18 @@ class App:
         pygame.display.update()
 
     def remove_life(self):
-        self.player.lives -= 1
-        if self.player.lives == 0:
-            self.state = "game over"
-        else:
-            self.player.grid_pos = vec(self.player.starting_pos)
-            self.player.pix_pos = self.player.get_pix_pos()
-            self.player.direction *= 0
-            for enemy in self.enemies:
-                enemy.grid_pos = vec(enemy.starting_pos)
-                enemy.pix_pos = enemy.get_pix_pos()
-                enemy.direction *= 0
+        pass
+        #self.player.lives -= 1
+        #if self.player.lives == 0:
+        #    self.state = "game over"
+        #else:
+        #    self.player.grid_pos = vec(self.player.starting_pos)
+        #    self.player.pix_pos = self.player.get_pix_pos()
+        #    self.player.direction *= 0
+        #    for enemy in self.enemies:
+        #        enemy.grid_pos = vec(enemy.starting_pos)
+        #        enemy.pix_pos = enemy.get_pix_pos()
+        #        enemy.direction *= 0
 
     def draw_coins(self):
         for coin in self.coins:
